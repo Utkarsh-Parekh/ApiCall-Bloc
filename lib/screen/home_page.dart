@@ -5,14 +5,17 @@ import 'package:api_call_bloc/screen/api_page.dart';
 import 'package:api_call_bloc/screen/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'favorite_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.navigationShell});
 
   @override
   State<HomePage> createState() => _HomePageState();
+
+ final StatefulNavigationShell navigationShell;
 }
 
 class _HomePageState extends State<HomePage> {
@@ -26,6 +29,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+
+    void goToBranch(int index){
+      widget.navigationShell.goBranch(
+        index,
+        initialLocation: index==widget.navigationShell.currentIndex
+      );
+    }
+
     return Scaffold(
       bottomNavigationBar: Container(
         margin: const EdgeInsets.all(20),
@@ -37,6 +49,7 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 _currentIndex = index;
               });
+              goToBranch(_currentIndex);
             },
             selectedItemColor: Colors.purple,
             backgroundColor: Colors.purple.shade50,
@@ -46,7 +59,7 @@ class _HomePageState extends State<HomePage> {
               BottomNavigationBarItem(icon: Icon(Icons.favorite),backgroundColor: Colors.blue,label: "Favorite"),
               BottomNavigationBarItem(icon: Icon(Icons.person),backgroundColor: Colors.blue,label: "Profile"),
             ],
-          
+
           ),
         ),
       ),
@@ -55,12 +68,11 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.purple,
 
       ),
-
-      body:(
-      Center(
-        child: pages.elementAt(_currentIndex)
-      )
-      )
+      body: SizedBox(
+        height: double.infinity,
+        width: double.infinity,
+        child: widget.navigationShell,
+      ),
     );
   }
 }

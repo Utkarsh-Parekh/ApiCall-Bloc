@@ -1,4 +1,5 @@
 import 'package:api_call_bloc/bloc/post_bloc.dart';
+import 'package:api_call_bloc/router/app-routes.dart';
 import 'package:api_call_bloc/screen/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,9 +16,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      home: HomePage()
+      routerConfig: AppRouter.routes,
+
     );
   }
 }

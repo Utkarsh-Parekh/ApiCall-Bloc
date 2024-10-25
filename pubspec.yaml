@@ -39,6 +39,7 @@ dependencies:
   flutter_bloc:
   bloc:
   equatable: ^2.0.5
+  go_router: ^14.3.0
 
 dev_dependencies:
   flutter_test:

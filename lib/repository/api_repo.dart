@@ -1,39 +1,35 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:api_call_bloc/model/post_model.dart';
 import 'package:http/http.dart' as http;
 
-class ApiRepo{
+class ApiRepository{
 
-  static Future<List<Post>> getAllPosts() async{
-    List<Post> posts = [];
-    const String BASE_URL = "https://jsonplaceholder.typicode.com/albums";
-
-    var response = await http.get(Uri.parse(BASE_URL));
-    var data = jsonDecode(response.body);
-
+  Future<UserModel> getUserDetails() async{
+    const String base_url = "https://reqres.in/api/unknown";
 
     try{
-      if(response.statusCode == 200){
-        for(Map<String,dynamic> index in data ){
-          posts.add(Post.fromJson(index));
-        }
-        return posts;
+      final response = await http.get(Uri.parse(base_url));
+      print(response.body);
+      switch(response.statusCode){
+
+        case 200:
+          return userModelFromJson(response.body);
+
+        case 400:
+          return throw Exception("BAD PARAMETERS");
+
+        default:
+          return throw Exception("Unable to get the data");
       }
-      else{
-        return posts;
-      }
+    }
+    on  SocketException catch(e){
+      return throw Exception("Please check Your Network Connection");
     }
     catch(e){
-      print(e.toString());
+      return throw Exception("ERROR!! NOT ABLE TO GET THE DATA");
     }
-
-    return [Post.withError("Please check Your Internet Connection")];
-
-
   }
-
-
-
 
 }

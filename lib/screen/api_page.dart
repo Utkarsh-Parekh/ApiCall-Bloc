@@ -1,8 +1,10 @@
+import 'package:api_call_bloc/bloc/post-bloc/post_event.dart';
+import 'package:api_call_bloc/bloc/post-bloc/post_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/post_bloc.dart';
-import '../bloc/post_event.dart';
-import '../bloc/post_state.dart';
+
+import '../bloc/post-bloc/post_bloc.dart';
+
 
 class ApiPage extends StatefulWidget {
   const ApiPage({super.key});
@@ -12,68 +14,63 @@ class ApiPage extends StatefulWidget {
 }
 
 class _ApiPageState extends State<ApiPage> {
-
   @override
   void initState() {
-    context.read<PostBloc>().add(GetUsersListEvent());
+    context.read<UserBloc>().add(FetchUserDetails());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<PostBloc,PostState>(
-          // bloc: PostBloc()..add(GetUsersListEvent()),
-          builder: (context,state){
-            if(state is PostLoadingState){
-              return const Center(child: CircularProgressIndicator());
-            }
-            else if(state is PostLoadedState){
-              return ListView.builder(
-                  itemCount: state.postData.length,
-                  itemBuilder: (context,int index){
-                    return  Container(
-                      padding: const EdgeInsets.all(10),
-                      margin: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(20)
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("User Id :${state.postData[index].userId.toString()}"),
-                          Text("Title :${state.postData[index].title.toString()}")
-                        ],
-                      ),
-                    );
-                  }
-              );
-            }
-            else if(state is PostLoadingErrorState){
-              return Center(
+      body: BlocBuilder<UserBloc, UserState>(
+        builder: (context, state) {
+          if (state.status == Status.Loading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (state.status == Status.Error) {
+            return Center(
+              child: Text(state.error.toString()),
+            );
+          }
+          if (state.userModel == null ||
+              state.userModel!.data.isEmpty == true) {
+            return Center(
+              child: Text(state.error.toString()),
+            );
+          }
+          return ListView.builder(
+            itemCount: state.userModel!.data.length ?? 0,
+            itemBuilder: (context, index) {
+              return Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color(
+                    int.parse(
+                      "0XFF" + state.userModel!.data[index].color.substring(1),
+                    ),
+                  ),
+                ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Text("Please check your internet connection"),
-                    ElevatedButton(onPressed: () {
-                       context.read<PostBloc>().add(GetUsersListEvent());
-                      }, child: const Text("Try again"))
+                    Row(
+                      children: [
+                        Text(state.userModel?.data[index].name ?? ""),
+                      ],
+                    ),
+                    Text(state.userModel?.data[index].pantoneValue ?? "")
                   ],
                 ),
               );
-
-            }
-
-            else{
-              return const Center(
-                child: Text("No Response"),
-              );
-            }
-
-
-          }
-
+            },
+          );
+        },
       ),
     );
   }

@@ -1,6 +1,4 @@
-import 'package:api_call_bloc/bloc/post_bloc.dart';
-import 'package:api_call_bloc/bloc/post_event.dart';
-import 'package:api_call_bloc/bloc/post_state.dart';
+import 'package:api_call_bloc/bloc/post-bloc/post_bloc.dart';
 import 'package:api_call_bloc/screen/api_page.dart';
 import 'package:api_call_bloc/screen/profile_page.dart';
 import 'package:flutter/material.dart';

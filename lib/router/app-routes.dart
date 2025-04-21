@@ -30,7 +30,6 @@ class AppRouter {
           );
         },
         branches: [
-
           //Api Page
           StatefulShellBranch(
             navigatorKey: _navigatorHomeKey,

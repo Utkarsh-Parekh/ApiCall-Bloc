@@ -1,14 +1,34 @@
-import 'package:api_call_bloc/bloc/post_bloc.dart';
+import 'package:api_call_bloc/bloc/login-bloc/log_in_bloc.dart';
+import 'package:api_call_bloc/bloc/post-bloc/post_bloc.dart';
+import 'package:api_call_bloc/repository/api_repo.dart';
 import 'package:api_call_bloc/router/app-routes.dart';
-import 'package:api_call_bloc/screen/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  runApp(BlocProvider(
-      create: (context) => PostBloc(),
-      child: const MyApp()));
+  runApp(
+    MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<ApiRepository>(
+          create: (context) => ApiRepository(),
+        ),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => UserBloc(context.read<ApiRepository>()),
+          ),
+
+          BlocProvider(
+            create: (context) => LogInBloc(),
+          ),
+        ],
+        child: const MyApp(),
+      ),
+    ),
+  );
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -19,7 +39,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: AppRouter.routes,
-
     );
   }
 }
